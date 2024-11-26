@@ -1,12 +1,9 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import './Block.css'
 import { Cursor } from './Cursor'
 import { createKeyHandler } from './keyHandler'
-
-const spanStyle: CSSProperties = {
-  position: 'relative',
-}
+import { getClickSide } from './getClickSide'
 
 export function Block() {
   const initialValueText = 'lorem ipsum dolor sit amet'
@@ -23,10 +20,11 @@ export function Block() {
     }
   }, [cursorIndex, isFocused, valueText])
 
-  const createSpanClickHandler = (index: number) => {
-    return () => {
+  const createSpanClickHandler = (index: number): React.MouseEventHandler<HTMLSpanElement> => {
+    return (event) => {
+      event.stopPropagation()
       setIsFocused(true)
-      setCursorIndex(index)
+      setCursorIndex(index + getClickSide(event))
     }
   }
 
@@ -37,7 +35,6 @@ export function Block() {
       <span
         key={index}
         onClick={createSpanClickHandler(index)}
-        style={spanStyle}
       >
         {char}
         {isCursorVisible && <Cursor />}
@@ -47,6 +44,7 @@ export function Block() {
 
   const handleClickDiv = () => {
     setIsFocused(true)
+    setCursorIndex(valueText.length)
   }
 
   const divStyle = {
@@ -55,5 +53,5 @@ export function Block() {
     padding: '4px',
   }
 
-  return <div onClick={handleClickDiv} style={divStyle}>{valueNodes}</div>
+  return <div className="block" onClick={handleClickDiv} style={divStyle}>{valueNodes}</div>
 }
