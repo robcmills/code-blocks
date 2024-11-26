@@ -7,13 +7,13 @@ import { getClickSide } from './getClickSide'
 
 export function Block() {
   const initialValueText = 'lorem ipsum dolor sit amet'
-  const [valueText] = useState(initialValueText)
+  const [valueText, setValueText] = useState(initialValueText)
   const [isFocused, setIsFocused] = useState(false)
   const [cursorIndex, setCursorIndex] = useState(0)
 
   useEffect(() => {
     if (!isFocused) return
-    const onKeyDown = createKeyHandler({ cursorIndex, setCursorIndex, valueText })
+    const onKeyDown = createKeyHandler({ cursorIndex, setCursorIndex, setValueText, valueText })
     window.addEventListener('keydown', onKeyDown)
     return () => {
       window.removeEventListener('keydown', onKeyDown)
@@ -31,12 +31,17 @@ export function Block() {
   const valueNodes = valueText.split('').concat('').map((char, index) => {
     const hasCursor = cursorIndex === index
     const isCursorVisible = isFocused && hasCursor
+    let charNode = char
+    if (char === ' ') {
+      // Prevent whitespaces from collapsing
+      charNode = '\u00A0'
+    }
     return (
       <span
         key={index}
         onClick={createSpanClickHandler(index)}
       >
-        {char}
+        {charNode}
         {isCursorVisible && <Cursor />}
       </span>
     )
