@@ -1,0 +1,14 @@
+.Editable {
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 8px;
+  white-space: pre-wrap;
+}
+
+.Editable code {
+  background-color: hsl(0, 0%, 10%);
+  border-radius: 4px;
+  display: block;
+  padding: 4px;
+  min-height: 1em;
+}

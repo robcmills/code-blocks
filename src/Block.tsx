@@ -33,7 +33,7 @@ export function Block() {
     const isCursorVisible = isFocused && hasCursor
     let charNode = char
     if (char === ' ') {
-      // Prevent whitespaces from collapsing
+      // Prevent whitespace from collapsing
       charNode = '\u00A0'
     }
     return (
