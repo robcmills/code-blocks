@@ -15,12 +15,14 @@ export function Editable() {
     }
     if (target.textContent?.startsWith('```')) {
       target.textContent = ''
+      target.removeAttribute('contentEditable')
       appendCode(target)
       return
     }
     for (const child of target.children) {
       if (child.textContent?.startsWith('```')) {
         child.textContent = ''
+        target.removeAttribute('contentEditable')
         appendCode(child)
       }
     }
