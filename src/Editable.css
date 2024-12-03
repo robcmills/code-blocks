@@ -12,3 +12,7 @@
   padding: 4px;
   min-height: 1em;
 }
+
+.Editable pre {
+  margin: 0;
+}

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { appendCode } from './appendCode'
 import './Editable.css'
+import { insertNewlineAtCursor } from './insertNewlineAtCursor'
 
 export function Editable() {
+  const editableRef = useRef<HTMLDivElement>(null)
   const [value] = useState('')
   console.log({ value })
 
@@ -29,33 +31,18 @@ export function Editable() {
     console.log('Editable', { event, key: event.key })
     const selection = window.getSelection();
     console.log({ selection })
-    const editableElement = selection?.focusNode;
-    console.log({ editableElement })
-    if (!editableElement) return
-    // if the editable element is a code element, prevent the default behavior
-    // (which is to append a new code element)
-    // and manaually emulate (best attempt) the behavior 
-    // when parent code element has editableContent attribute
-    // (which is to append new child text nodes)
-    const codeNode = editableElement.parentNode?.nodeName === 'CODE'
-      ? editableElement.parentNode
-      : null
-    if (event.key === 'Enter' && codeNode) {
+    const selectionNode = selection?.focusNode;
+    console.log({ selectionNode })
+    if (!selectionNode) return
+    const selectionElement = selectionNode.parentElement
+    console.log({ selectionElement })
+    // const codeNode = editableElement.parentNode?.nodeName === 'CODE'
+    //   ? editableElement.parentNode
+    //   : null
+    if (event.key === 'Enter' && selectionElement?.nodeName === 'CODE') {
       console.log('Enter in code node')
       event.preventDefault()
-
-      codeNode.appendChild(document.createTextNode('\n'))
-      const newTextNode = document.createTextNode('')
-      codeNode.appendChild(newTextNode)
-      // Create a new range
-      const range = document.createRange();
-      // Position the range at the end of the new text node
-      range.setStart(newTextNode, 0);
-      range.setEnd(newTextNode, 0);
-      // Get the selection object and update it
-      const selection = window.getSelection();
-      selection?.removeAllRanges();
-      selection?.addRange(range);
+      insertNewlineAtCursor(selectionElement)
     }
   }
 
@@ -65,6 +52,7 @@ export function Editable() {
       contentEditable
       onInput={onInput}
       onKeyDown={onKeyDown}
+      ref={editableRef}
       tabIndex={0}
     />
   )
