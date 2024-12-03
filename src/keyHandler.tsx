@@ -22,7 +22,7 @@ export function createKeyHandler({
       clamp({
         value: currentIndex + offset,
         min: 0,
-        max: valueText.length + 1
+        max: valueText.length
       })
     )
   }
@@ -34,7 +34,7 @@ export function createKeyHandler({
 
   const insertCharAt = (index: number, char: string) => {
     setValueText(valueText.slice(0, index) + char + valueText.slice(index))
-    moveCursor(1)
+    setCursorIndex(index + 1)
   }
 
   return (event: KeyboardEvent) => {
