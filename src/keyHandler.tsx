@@ -28,6 +28,7 @@ export function createKeyHandler({
   }
 
   const deleteCharAt = (index: number) => {
+    if (index < 0) return
     setValueText(valueText.slice(0, index) + valueText.slice(index + 1))
     moveCursor(-1)
   }
