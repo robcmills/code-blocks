@@ -1,3 +1,9 @@
-.block span {
+.Block .Char {
+  display: inline-block;
+  height: 1rem;
   position: relative;
+}
+
+.Block .Line {
+  height: 1rem;
 }

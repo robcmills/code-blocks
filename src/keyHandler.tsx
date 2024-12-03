@@ -2,8 +2,8 @@ import { clamp } from './clamp'
 
 type CreateKeyHandlerParams = {
   cursorIndex: number
-  setCursorIndex: (index: number) => void
-  setValueText: (value: string) => void
+  setCursorIndex: React.Dispatch<React.SetStateAction<number>>
+  setValueText: React.Dispatch<React.SetStateAction<string>>
   valueText: string
 }
 
@@ -11,13 +11,18 @@ type CreateKeyHandlerParams = {
  * This is a very incomplete implementation obviously
  * https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
  */
-export function createKeyHandler({ cursorIndex, setCursorIndex, setValueText, valueText }: CreateKeyHandlerParams) {
+export function createKeyHandler({
+  cursorIndex,
+  setCursorIndex,
+  setValueText,
+  valueText,
+}: CreateKeyHandlerParams) {
   const moveCursor = (offset: number) => {
-    setCursorIndex(
+    setCursorIndex((currentIndex) =>
       clamp({
-        value: cursorIndex + offset,
+        value: currentIndex + offset,
         min: 0,
-        max: valueText.length
+        max: valueText.length + 1
       })
     )
   }
@@ -42,6 +47,7 @@ export function createKeyHandler({ cursorIndex, setCursorIndex, setValueText, va
       ArrowLeft: () => moveCursor(-1),
       ArrowRight: () => moveCursor(1),
       Backspace: () => deleteCharAt(cursorIndex - 1),
+      Enter: () => insertCharAt(cursorIndex, '\n')
     }
     handler[event.key]?.()
   }

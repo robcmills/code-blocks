@@ -1,8 +1,9 @@
-.block span.cursor {
+.Cursor {
   border-left: 1px solid hsl(0, 0%, 75%);
   position: absolute;
   left: 0;
-  height: 24px;
+  top: 0;
+  bottom: 0;
   animation: blink 1s infinite;
 }
 
