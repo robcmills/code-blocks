@@ -17,6 +17,36 @@ export function createKeyHandler({
   setValueText,
   valueText,
 }: CreateKeyHandlerParams) {
+  const arrowLeftHandler = (event: KeyboardEvent) => {
+    if (event.metaKey) {
+      // Move cursor to start of line
+      const beforeCursor = valueText.slice(0, cursorIndex)
+      const lastIndexOfNewline = beforeCursor.lastIndexOf('\n')
+      if (lastIndexOfNewline === -1) {
+        setCursorIndex(0)
+      } else {
+        setCursorIndex(lastIndexOfNewline + 1)
+      }
+      return
+    }
+    moveCursor(-1)
+  }
+
+  const arrowRightHandler = (event: KeyboardEvent) => {
+    if (event.metaKey) {
+      // Move cursor to end of line
+      // Either next newline or end of text
+      const afterCursor = valueText.slice(cursorIndex)
+      let movement = afterCursor.indexOf('\n')
+      if (movement === -1) {
+        movement = afterCursor.length
+      }
+      moveCursor(movement)
+      return
+    }
+    moveCursor(1)
+  }
+
   const moveCursor = (offset: number) => {
     setCursorIndex((currentIndex) =>
       clamp({
@@ -39,17 +69,17 @@ export function createKeyHandler({
   }
 
   return (event: KeyboardEvent) => {
-    console.log({ key: event.key })
+    event.preventDefault()
     if (event.key.length === 1) {
       insertCharAt(cursorIndex, event.key)
       return
     }
-    const handler: Record<string, () => void> = {
-      ArrowLeft: () => moveCursor(-1),
-      ArrowRight: () => moveCursor(1),
+    const handler: Record<string, (event: KeyboardEvent) => void> = {
+      ArrowLeft: arrowLeftHandler,
+      ArrowRight: arrowRightHandler,
       Backspace: () => deleteCharAt(cursorIndex - 1),
       Enter: () => insertCharAt(cursorIndex, '\n')
     }
-    handler[event.key]?.()
+    handler[event.key]?.(event)
   }
 }
