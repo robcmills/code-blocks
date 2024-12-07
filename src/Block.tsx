@@ -5,8 +5,9 @@ import { Cursor } from './Cursor'
 import { createKeyHandler } from './keyHandler'
 import { getClickSide } from './getClickSide'
 
+const initialValueText = `The technological singularity—or simply the singularity[1]—is a hypothetical future point in time at which technological growth becomes uncontrollable and irreversible, resulting in unforeseeable consequences for human civilization.[2][3] According to the most popular version of the singularity hypothesis, I. J. Good's intelligence explosion model of 1965, an upgradable intelligent agent could eventually enter a positive feedback loop of self-improvement cycles, each successive; and more intelligent generation appearing more and more rapidly, causing a rapid increase ("explosion") in intelligence which would ultimately result in a powerful superintelligence, qualitatively far surpassing all human intelligence.[4]`
+
 export function Block() {
-  const initialValueText = 'lorem ipsum dolor sit amet'
   const [valueText, setValueText] = useState(initialValueText)
   const [isFocused, setIsFocused] = useState(false)
   const [cursorIndex, setCursorIndex] = useState(0)
@@ -67,15 +68,12 @@ export function Block() {
     setCursorIndex(valueText.length)
   }
 
-  const divStyle = {
+  const blockStyle = {
     border: isFocused ? '1px solid gray' : '1px solid transparent',
-    borderRadius: '4px',
-    padding: '4px',
-    whiteSpace: 'pre-wrap',
   }
 
   return (
-    <div className="Block" onClick={handleClickDiv} style={divStyle}>
+    <div className="Block" onClick={handleClickDiv} style={blockStyle}>
       {lines}
     </div>
   )
