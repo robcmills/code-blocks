@@ -40,27 +40,30 @@ export function Block() {
 
   let cursorNodeIndex = -1
   const lines = valueText.split('\n').map((line, lineIndex) => {
-    const chars = line.split('').concat('').map((char) => {
-      cursorNodeIndex++
-      const hasCursor = cursorNodeIndex === cursorIndex
-      const isCursorVisible = isFocused && hasCursor
-      let charNode = char
-      if (char === ' ') {
-        // Prevent whitespace from collapsing
-        charNode = '\u00A0'
-      }
-      return (
-        <span
-          className='Char'
-          key={cursorNodeIndex}
-          onClick={createCharClickHandler(cursorNodeIndex)}
-        >
-          {charNode}
-          {isCursorVisible && <Cursor />}
-        </span>
-      )
+    const words = line.split(' ').map((word, wordIndex) => {
+      const chars = word.split('').concat(' ').map((char) => {
+        cursorNodeIndex++
+        const hasCursor = cursorNodeIndex === cursorIndex
+        const isCursorVisible = isFocused && hasCursor
+        let charNode = char
+        if (char === ' ') {
+          // Prevent whitespace from collapsing
+          charNode = '\u00A0'
+        }
+        return (
+          <span
+            className='Char'
+            key={cursorNodeIndex}
+            onClick={createCharClickHandler(cursorNodeIndex)}
+          >
+            {charNode}
+            {isCursorVisible && <Cursor />}
+          </span>
+        )
+      })
+      return <span className='Word' key={wordIndex}>{chars}</span>
     })
-    return <div key={lineIndex} className='Line'>{chars}</div>
+    return <div className='Line' key={lineIndex}>{words}</div>
   })
 
   const handleClickDiv = () => {

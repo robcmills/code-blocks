@@ -4,12 +4,16 @@
   white-space: pre-wrap;
 }
 
+.Block .Line {
+  min-height: 1rem;
+}
+
+.Block .Word {
+  display: inline-block;
+}
+
 .Block .Char {
   display: inline-block;
   height: 1rem;
   position: relative;
-}
-
-.Block .Line {
-  min-height: 1rem;
 }
