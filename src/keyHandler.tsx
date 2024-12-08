@@ -89,6 +89,7 @@ export function createKeyHandler({
     }
     const index = charElement.getAttribute('data-index')
     if (!index) return
+    // Determine whether to move cursor to left or right (index + 1)
     const charRect = charElement.getBoundingClientRect()
     const charXCenter = charRect.left + charRect.width / 2
     setCursorIndex(parseInt(index) + (charXCenter < pointAbove.x ? 1 : 0))

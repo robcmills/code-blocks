@@ -12,6 +12,9 @@ This has basically devolved into just building a subset of a rich text editor.
 
 ### Todo:
 
+- [ ] ArrowUp/Down edge cases
+  + [ ] When char element above/below is the end of line space, do not add one to index
+  + [ ] If char element not found, check for line
 - [ ] ArrowUp/Down horizontal drift
       The simple algo used is always relative to the cursor's current position, which can shift horizontally as the cursor moves between lines. A better approach would be to track an xAnchor position, which would initialized to the center of the cursor's curren position at the start of the up/down movement, and remains as long as movement is a sequence of up/down movements, and is reset if any other action is taken.
 - [ ] Meta + ArrowLeft/Right support for wrapped lines
