@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import './Block.css'
 import { Cursor } from './Cursor'
@@ -16,9 +16,12 @@ export function Block() {
     value: valueText.slice(0, cursorIndex) + '|' + valueText.slice(cursorIndex)
   })
 
+  const cursorRef = useRef<HTMLSpanElement>(null)
+
   useEffect(() => {
     if (!isFocused) return
     const onKeyDown = createKeyHandler({
+      cursorElement: cursorRef.current,
       cursorIndex,
       setCursorIndex,
       setValueText,
@@ -53,11 +56,12 @@ export function Block() {
         return (
           <span
             className='Char'
+            data-index={cursorNodeIndex}
             key={cursorNodeIndex}
             onClick={createCharClickHandler(cursorNodeIndex)}
           >
             {charNode}
-            {isCursorVisible && <Cursor />}
+            {isCursorVisible && <Cursor ref={cursorRef} />}
           </span>
         )
       })

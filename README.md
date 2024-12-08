@@ -1,50 +1,18 @@
-# React + TypeScript + Vite
+# Code Blocks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Experimenting with a text field that allows embedded code blocks.
 
-Currently, two official plugins are available:
+I experimented with an approach that used contenteditable attribute, but it was difficult to override the default native behaviors. For example when pressing enter when the cursor was inside a nested code block, the native behavior was poor, it would create a new code block instead of inserting a newline. But calling preventDefault and emulating other native behaviors was difficult.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+I felt like a better approach to fighting with the native behaviors, was to build up our own textarea from scratch. The current approach does not use any input, textarea, or contenteditable elements.
 
-## Expanding the ESLint configuration
+The drawback to this approach is that it is a lot of work to build up the functionality of a textarea from scratch. However, once this basic set of foundational behaviors are built, it becomes very easy to modify and extend them with additional "rich text" behaviors.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+This has basically devolved into just building a subset of a rich text editor.
 
-- Configure the top-level `parserOptions` property like this:
+### Todo:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- [ ] ArrowUp/Down horizontal drift
+      The simple algo used is always relative to the cursor's current position, which can shift horizontally as the cursor moves between lines. A better approach would be to track an xAnchor position, which would initialized to the center of the cursor's curren position at the start of the up/down movement, and remains as long as movement is a sequence of up/down movements, and is reset if any other action is taken.
+- [ ] Meta + ArrowLeft/Right support for wrapped lines
+- [ ] Alt + ArrowLeft/Right to move between words

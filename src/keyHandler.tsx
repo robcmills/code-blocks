@@ -1,6 +1,7 @@
 import { clamp } from './clamp'
 
 type CreateKeyHandlerParams = {
+  cursorElement: HTMLSpanElement | null
   cursorIndex: number
   setCursorIndex: React.Dispatch<React.SetStateAction<number>>
   setValueText: React.Dispatch<React.SetStateAction<string>>
@@ -12,6 +13,7 @@ type CreateKeyHandlerParams = {
  * https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
  */
 export function createKeyHandler({
+  cursorElement,
   cursorIndex,
   setCursorIndex,
   setValueText,
@@ -47,6 +49,51 @@ export function createKeyHandler({
     moveCursor(1)
   }
 
+  const arrowDownHandler = () => {
+    if (!cursorElement) return
+    const cursorRect = cursorElement.getBoundingClientRect()
+    const pointBelow = {
+      x: cursorRect.left + cursorRect.width / 2,
+      y: cursorRect.bottom + cursorRect.height / 2,
+    }
+    const elementsBelow = document.elementsFromPoint(
+      pointBelow.x,
+      pointBelow.y,
+    )
+    const charElement = elementsBelow.find((element) =>
+      element.classList.contains('Char'))
+    if (!charElement) return
+    const index = charElement.getAttribute('data-index')
+    if (!index) return
+    const charRect = charElement.getBoundingClientRect()
+    const charXCenter = charRect.left + charRect.width / 2
+    setCursorIndex(parseInt(index) + (charXCenter < pointBelow.x ? 1 : 0))
+  }
+
+  const arrowUpHandler = () => {
+    if (!cursorElement) return
+    const cursorRect = cursorElement.getBoundingClientRect()
+    const pointAbove = {
+      x: cursorRect.left + cursorRect.width / 2,
+      y: cursorRect.top - cursorRect.height / 2,
+    }
+    const elementsAbove = document.elementsFromPoint(
+      pointAbove.x,
+      pointAbove.y,
+    )
+    const charElement = elementsAbove.find((element) =>
+      element.classList.contains('Char'))
+    if (!charElement) {
+      // setCursorIndex(0)
+      return
+    }
+    const index = charElement.getAttribute('data-index')
+    if (!index) return
+    const charRect = charElement.getBoundingClientRect()
+    const charXCenter = charRect.left + charRect.width / 2
+    setCursorIndex(parseInt(index) + (charXCenter < pointAbove.x ? 1 : 0))
+  }
+
   const moveCursor = (offset: number) => {
     setCursorIndex((currentIndex) =>
       clamp({
@@ -75,8 +122,10 @@ export function createKeyHandler({
       return
     }
     const handler: Record<string, (event: KeyboardEvent) => void> = {
+      ArrowDown: arrowDownHandler,
       ArrowLeft: arrowLeftHandler,
       ArrowRight: arrowRightHandler,
+      ArrowUp: arrowUpHandler,
       Backspace: () => deleteCharAt(cursorIndex - 1),
       Enter: () => insertCharAt(cursorIndex, '\n')
     }
